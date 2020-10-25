@@ -23,6 +23,7 @@ from .N7744A import ModelN7744A
 from .N7752A import ModelN7752A
 from .N7764A import ModelN7764A
 from .NSW import ModelNSW
+from .OTF930 import ModelOTF930
 from .OTF970 import ModelOTF970
 from .OTF980 import ModelOTF980
 from .PDLE101 import ModelPDLE101

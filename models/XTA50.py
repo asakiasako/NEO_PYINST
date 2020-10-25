@@ -25,8 +25,8 @@ class ModelXTA50(VisaInstrument, TypeOTF):
         self._max_wl = 1620
         self._min_freq = round(LIGHT_SPEED/self._max_wl, 3)
         self._max_freq = round(LIGHT_SPEED/self._min_wl, 3)
-        self._min_bw = float(self.query('FWHM_MIN?').split('=')[1])
-        self._max_bw = float(self.query('FWHM_MAX?').split('=')[1])
+        self._min_bw_in_nm = float(self.query('FWHM_MIN?').split('=')[1])
+        self._max_bw_in_nm = float(self.query('FWHM_MAX?').split('=')[1])
 
     def get_wavelength(self):
         """
@@ -77,6 +77,6 @@ class ModelXTA50(VisaInstrument, TypeOTF):
         """
         if not isinstance(value, (int, float)):
             raise TypeError('Bandwidth should be number')
-        if not self.min_bandwidth <= value <= self.max_bandwidth:
+        if not self.min_bandwidth_in_nm <= value <= self.max_bandwidth_in_nm:
             raise ValueError('Bandwidth value out of range')
         self.query('FWHM={bw}'.format(bw=round(value, 4)))

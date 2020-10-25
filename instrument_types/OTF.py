@@ -12,11 +12,12 @@ class TypeOTF(BaseInstrumentType):
         self._max_wl = None
         self._min_freq = None
         self._max_freq = None
-        self._min_bw = None
-        self._max_bw = None
+        self._min_bw_in_nm = None
+        self._max_bw_in_nm = None
+        self._min_bw_in_ghz = None
+        self._max_bw_in_ghz = None
 
     # -- properties --
-    # min_wavelength
     @ property
     def min_wavelength(self):
         if self._min_wl is None:
@@ -24,11 +25,6 @@ class TypeOTF(BaseInstrumentType):
         else:
             return self._min_wl
 
-    @ min_wavelength.setter
-    def min_wavelength(self, value):
-        raise AttributeError('Attribute "min_wavelength" is read-only.')
-
-    # max_wavelength
     @ property
     def max_wavelength(self):
         if self._max_wl is None:
@@ -36,11 +32,6 @@ class TypeOTF(BaseInstrumentType):
         else:
             return self._max_wl
 
-    @ max_wavelength.setter
-    def max_wavelength(self, value):
-        raise AttributeError('Attribute "max_wavelength" is read-only.')
-
-    # min_frequency
     @ property
     def min_frequency(self):
         if self._min_freq is None:
@@ -48,11 +39,6 @@ class TypeOTF(BaseInstrumentType):
         else:
             return self._min_freq
 
-    @ min_frequency.setter
-    def min_frequency(self, value):
-        raise AttributeError('Attribute "min_frequency" is read-only.')
-
-    # max_frequency
     @ property
     def max_frequency(self):
         if self._max_freq is None:
@@ -60,33 +46,33 @@ class TypeOTF(BaseInstrumentType):
         else:
             return self._max_freq
 
-    @ max_frequency.setter
-    def max_frequency(self, value):
-        raise AttributeError('Attribute "max_frequency" is read-only.')
-
-    # min_bandwidth
     @ property
-    def min_bandwidth(self):
-        if self._min_bw is None:
+    def min_bandwidth_in_nm(self):
+        if self._min_bw_in_nm is None:
             self._raise_not_implemented()
         else:
-            return self._min_bw
+            return self._min_bw_in_nm
 
-    @ min_bandwidth.setter
-    def min_bandwidth(self, value):
-        raise AttributeError('Attribute "min_bandwidth" is read-only.')
-
-    # max_bandwidth
     @ property
-    def max_bandwidth(self):
-        if self._max_bw is None:
+    def max_bandwidth_in_nm(self):
+        if self._max_bw_in_nm is None:
             self._raise_not_implemented()
         else:
-            return self._max_bw
+            return self._max_bw_in_nm
 
-    @ max_bandwidth.setter
-    def max_bandwidth(self, value):
-        raise AttributeError('Attribute "max_bandwidth" is read-only.')
+    @ property
+    def min_bandwidth_in_ghz(self):
+        if self._min_bw_in_ghz is None:
+            self._raise_not_implemented()
+        else:
+            return self._min_bw_in_ghz
+    
+    @ property
+    def max_bandwidth_in_ghz(self):
+        if self._max_bw_in_ghz is None:
+            self._raise_not_implemented()
+        else:
+            return self._max_bw_in_ghz
 
     # -- methods --
     def get_wavelength(self):
@@ -121,23 +107,7 @@ class TypeOTF(BaseInstrumentType):
         """
         self._raise_not_implemented()
 
-    def get_wavelength_offset(self):
-        """
-        Get setting value of wavelength offset in nm.
-
-        :Return Type: float
-        """
-        self._raise_not_implemented()
-
-    def set_wavelength_offset(self, value):
-        """
-        Set center wavelength offset in nm.
-
-        :Parameters: **value** - float|int, wavelength offset in nm.
-        """
-        self._raise_not_implemented()
-
-    def get_bandwidth(self):
+    def get_bandwidth_in_nm(self):
         """
         Get filter bandwidth in nm.
 
@@ -145,27 +115,11 @@ class TypeOTF(BaseInstrumentType):
         """
         self._raise_not_implemented()
 
-    def set_bandwidth(self, value):
+    def set_bandwidth_in_nm(self, value):
         """
         Set filter bandwidth.
 
         :Parameters: **value** - float|int, bandwidth setting value in nm
-        """
-        self._raise_not_implemented()
-
-    def get_bandwidth_offset(self):
-        """
-        Get setting value filter bandwidth in nm.
-
-        :Return Type: float
-        """
-        self._raise_not_implemented()
-
-    def set_bandwidth_offset(self, value):
-        """
-        Set filter bandwidth in nm.
-
-        :Parameters: **value** - float|int, bandwidth offset in nm
         """
         self._raise_not_implemented()
 

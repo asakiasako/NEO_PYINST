@@ -77,24 +77,6 @@ class ModelOTF930(VisaInstrument, TypeOTF):
             raise TypeError('Wavelength offset value should be number')
         return self.command('CW %s' % str(round(value, 3)))
 
-    def get_bandwidth_offset(self):
-        """
-        Reads out the offset bandwidth of filter bandwidth.
-        :return: (float) bandwidth offset in nm
-        """
-        offset_str = self.query(':OFFS:Band?')
-        offset = float(offset_str)*10**9
-        return offset
-
-    def set_bandwidth_offset(self, value):
-        """
-        Sets the offset to the filter bandwidth.
-        :param value: (float|int) bandwidth offset in nm
-        """
-        if not isinstance(value, (float, int)):
-            raise TypeError('Bandwidth offset value should be number')
-        return self.command(':OFFS:Band '+str(value)+'nm')
-
     def get_power_unit(self):
         """
         Get optical power unit of power monitor.
