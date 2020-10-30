@@ -22,8 +22,8 @@ class ModelBTF10011(BaseInstrument, TypeOTF):
         self._max_wl = 1565
         self._min_freq = 191.56
         self._max_freq = 196.58
-        self._min_bw = 1
-        self._max_bw = 18
+        self._min_bw_in_nm = 1
+        self._max_bw_in_nm = 18
 
         self.__resource_name = resource_name
 
@@ -122,7 +122,7 @@ class ModelBTF10011(BaseInstrument, TypeOTF):
         wl = round(LIGHT_SPEED/value, 3)
         return self.set_wavelength(wl)
 
-    def get_bandwidth(self):
+    def get_bandwidth_in_nm(self):
         """
         Reads out the filter bandwidth.
         :return: (float) bandwidth setting value in nm
@@ -144,14 +144,14 @@ class ModelBTF10011(BaseInstrument, TypeOTF):
         else:
             return float(re.search('.*LW\((.*?)nm\).*', data).group(1))
 
-    def set_bandwidth(self, value):
+    def set_bandwidth_in_nm(self, value):
         """
         Sets the filter bandwidth.
         :param value: (float|int) bandwidth setting value in nm
         """
         if not isinstance(value, (float, int)):
             raise TypeError('Bandwidth value should be number')
-        if not self.min_bandwidth <= value <= self.max_bandwidth:
+        if not self.min_bandwidth_in_nm <= value <= self.max_bandwidth_in_nm:
             raise ValueError('Bandwidth value out of range')
         wl = self.get_wavelength()
         self.__write('w%.2f,%.2f' % (wl, value))

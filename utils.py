@@ -1,4 +1,5 @@
 import math
+from .constants import LIGHT_SPEED
 
 
 def w_to_dbm(value):
@@ -27,6 +28,26 @@ def dbm_to_w(value):
     w_value = (10**(value/10))/1000
     w_value = float(w_value)
     return w_value
+
+
+def bw_in_nm_to_ghz(bw_in_nm, center_wl):
+    """
+    bw_in_nm: nm
+    center_wl: nm
+    """
+    C = LIGHT_SPEED
+    bw_in_ghz = 1000 * (C/(center_wl-bw_in_nm/2) - C/(center_wl+bw_in_nm/2))
+    return bw_in_ghz
+
+
+def bw_in_ghz_to_nm(bw_in_ghz, center_freq):
+    """
+    bw_in_ghz: GHz
+    center_freq: THz
+    """
+    C = LIGHT_SPEED
+    bw_in_nm = C/(center_freq-bw_in_ghz/2000) - C/(center_freq+bw_in_ghz/2000)
+    return bw_in_nm
 
 
 def format_unit(value, precision):

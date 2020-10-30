@@ -2,6 +2,7 @@ from ._VisaInstrument import VisaInstrument
 from ..instrument_types import TypeOTF
 from ..constants import OpticalUnit
 from time import sleep
+from ..utils import bw_in_ghz_to_nm, bw_in_nm_to_ghz
 
 
 class ModelOTF970(VisaInstrument, TypeOTF):
@@ -34,8 +35,8 @@ class ModelOTF970(VisaInstrument, TypeOTF):
         self._max_wl = float(self.query(':WAV? MAX'))*10**9
         self._min_freq = float(self.query(':FREQ? MIN'))/(10**12)
         self._max_freq = float(self.query(':FREQ? MAX'))/(10**12)
-        self._min_bw = float(self.query(':BAND? MIN'))*10**9
-        self._max_bw = float(self.query(':BAND? MAX'))*10**9
+        self._min_bw_in_nm = float(self.query(':BAND? MIN'))*10**9
+        self._max_bw_in_nm = float(self.query(':BAND? MAX'))*10**9
         self._min_wl_offs = float(self.query(':OFFS? MIN'))*10**9
         self._max_wl_offs = float(self.query(':OFFS? MAX'))*10**9
         self._min_bw_offs = float(self.query(':OFFS:Band? MIN'))*10**9
@@ -110,7 +111,7 @@ class ModelOTF970(VisaInstrument, TypeOTF):
             raise ValueError('Wavelength offset value out of range')
         return self.command(':OFFS '+str(value)+'nm')
 
-    def get_bandwidth(self):
+    def get_bandwidth_in_nm(self):
         """
         Reads out the filter bandwidth.
         :return: (float) bandwidth setting value in nm
@@ -119,14 +120,14 @@ class ModelOTF970(VisaInstrument, TypeOTF):
         bw = float(bw_str)*10**9
         return bw
 
-    def set_bandwidth(self, value):
+    def set_bandwidth_in_nm(self, value):
         """
         Sets the filter bandwidth.
         :param value: (float|int) bandwidth setting value in nm
         """
         if not isinstance(value, (int, float)):
             raise TypeError('Bandwidth should be number')
-        if not self.min_bandwidth <= value <= self.max_bandwidth:
+        if not self.min_bandwidth_in_nm <= value <= self.max_bandwidth_in_nm:
             raise ValueError('Bandwidth value out of range')
         return self.command(':BAND '+str(value)+'nm')
 
