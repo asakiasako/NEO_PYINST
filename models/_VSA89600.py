@@ -55,7 +55,11 @@ class ModelVSA89600(VisaInstrument):
             raise ValueError('trace starts from 1')
         value_str = self.query(':TRACe%d:DATA:TABLe?' % trace)
         value_list = value_str.split(',')
-        value_list = list(map(lambda x: float(x), value_list))
+        for i in range(len(value_list)):
+            try:
+                value_list[i] = float(value_list[i])
+            except Exception:
+                pass
         return value_list
 
     def get_trace_units(self, trace):
@@ -83,7 +87,12 @@ class ModelVSA89600(VisaInstrument):
         values = self.get_trace_values(trace)
         units = self.get_trace_units(trace)
         ilen = len(names)
+        if not ilen == len(values) == len(units):
+            raise IndexError('Mismatch numbers for names, values and units')
         res = {}
-        for i in range(ilen):
-            res[names[i]] = (values[i], units[i])
+        try:
+            for i in range(ilen):
+                res[names[i]] = (values[i], units[i])
+        except Exception:
+            raise
         return res
