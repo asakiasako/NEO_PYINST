@@ -320,7 +320,6 @@ class ModelAQ2200(VisaInstrument):
         :param value: (float|int) att value in dB
         """
         value = round(value, 3)
-        print('ATT: %.f' % value)
         if not isinstance(value, (int, float)):
             raise TypeError('Att value should be float or int.')
         if not 0 <= value <= self._max_att:
