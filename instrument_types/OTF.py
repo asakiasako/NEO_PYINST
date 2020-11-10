@@ -122,6 +122,22 @@ class TypeOTF(BaseInstrumentType):
         :Parameters: **value** - float|int, bandwidth setting value in nm
         """
         self._raise_not_implemented()
+        
+    def get_bandwidth_in_ghz(self):
+        """
+        Get filter bandwidth in ghz.
+
+        :Return Type: float
+        """
+        self._raise_not_implemented()
+
+    def set_bandwidth_in_ghz(self, value):
+        """
+        Set filter bandwidth in ghz.
+
+        :Parameters: **value** - float|int, bandwidth setting value in ghz
+        """
+        self._raise_not_implemented()
 
     def peak_search(self, center, span):
         """
