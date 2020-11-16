@@ -463,14 +463,23 @@ class ModelAQ6370(VisaInstrument, TypeOSA):
         result_list = [float(i) for i in result_str.split(',')]
         return result_list
 
-    def save_screen(self, filepath):
+    def capture_screen(self):
+        """
+        return: bytes
+        """
         # create a unique name with nearly no chance to conflict
         temp_filename = 'tmp-{timestamp:X}'.format(timestamp=int(time.time()*10**6))
         # save image to internal memory
         self.command(':MMEMORY:STORE:GRAPHICS COLOR,BMP,"{filename}",INTERNAL'.format(filename=temp_filename))
+        self.opc
         # save data to PC
         bin_data = self.query(':MMEMORY:DATA? "{filename}.BMP",internal'.format(filename=temp_filename), bin=True)
-        with open(filepath, 'wb') as f:
-            f.write(bytes(bin_data))
+        bytes_data = bytes(bin_data)
         # delete temp file from internal memory
         self.command(':MMEMORY:DELETE "{filename}.BMP",internal'.format(filename=temp_filename))
+        return bytes_data
+
+    def save_screen(self, filepath):
+        data = self.capture_screen()
+        with open(filepath, 'wb') as f:
+            f.write(data)
