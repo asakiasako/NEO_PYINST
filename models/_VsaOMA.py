@@ -9,7 +9,7 @@ class ModelVsaOMA(ModelVSA89600, TypeOMA):
         super(ModelVsaOMA, self).__init__(resource_name, **kwargs)
 
     def set_frequency(self, frequency):
-        self.smart_setup(freq=frequency)
+        self.smart_setup(freq=frequency, pre_set_layout=False)
 
     def set_wavelength(self, wavelength):
         freq = LIGHT_SPEED/wavelength
@@ -17,7 +17,7 @@ class ModelVsaOMA(ModelVSA89600, TypeOMA):
 
     def smart_setup(self, execute=True, freq=None, symbol_rate=None, fine_tune_symbol_rate=None, demodulation_format=None, polarization=None, pre_set_layout=None):
         """
-        execute: if execute after setup. if fause, settings will be set, but no execution will be done.
+        execute: if execute after setup. if false, settings will be set, but no execution will be done.
         """
         if freq is not None:
             self.command(':OMA:SMartSEtup:CarrierFrequency:FRErequency {value}'.format(value=freq*10**12))

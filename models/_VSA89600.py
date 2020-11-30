@@ -96,3 +96,110 @@ class ModelVSA89600(VisaInstrument):
         except Exception:
             raise
         return res
+
+    def get_custom_demod_measurement_filter(self):
+        cmd = ':CDEMod:FILTer?'
+        rpl = self.query(cmd)
+        return rpl.strip().strip('"')
+
+    def set_custom_demod_measurement_filter(self, _filter):
+        FILTERS = { 'None', 'Rectangular', 'RootRaisedCosine', 'Gaussian', 'LowPass' }
+        if _filter not in FILTERS:
+            raise ValueError('Invalid filter type for Custom Demod Measurement Filter: {filter}'.format(filter=_filter))
+        cmd = ':CDEM:FILT "{filter}"'.format(filter=_filter)
+        self.command(cmd)
+
+    def get_custom_demod_reference_filter(self):
+        cmd = ':CDEM:FILT:REF?'
+        rpl = self.query(cmd)
+        return rpl.strip().strip('"')
+
+    def set_custom_demod_reference_filter(self, _filter):
+        FILTERS = { "Rectangular", "RaisedCosine", "RootRaisedCosine", "Gaussian", "HalfSine" }
+        if _filter not in FILTERS:
+            raise ValueError('Invalid filter type for Custom Demod Measurement Filter: {filter}'.format(filter=_filter))
+        cmd = ':CDEM:FILT:REF "{filter}"'.format(filter=_filter)
+        self.command(cmd)
+
+    def get_custom_demod_filter_abt(self):
+        """
+        Gets the α (alpha) or BT (bandwidth time product) parameter for measurement and reference filters
+        """
+        cmd = ':CDEMod:FILTer:ABT?'
+        rpl = self.query(cmd)
+        return float(rpl)
+
+    def set_custom_demod_filter_abt(self, abt):
+        """
+        Sets the α (alpha) or BT (bandwidth time product) parameter for measurement and reference filters
+        """
+        if not isinstance(abt, (int, float)):
+            raise TypeError('Invalid type for abt (alpha or BT parameter), should be a number.')
+        cmd = ':CDEMod:FILTer:ABT {value:f}'.format(value=round(abt, 6))
+        self.command(cmd)
+
+    def get_custom_demod_equalization_state(self):
+        """
+        Gets a value indicating whether the equalization filter is enabled. 
+        """
+        cmd = ':CDEMod:COMPensate:EQUalize?'
+        rpl = self.query(cmd)
+        return bool(int(rpl))
+
+    def set_custom_demod_equalization_state(self, enable):
+        """
+        Sets a value indicating whether the equalization filter is enabled. 
+        """
+        if not isinstance(enable, bool):
+            raise TypeError('Parameter enable should be bool.')
+        state = int(enable)
+        cmd = ':CDEMod:COMPensate:EQUalize {state:d}'.format(state=state)
+        self.command(cmd)
+
+    def get_custom_demod_equalization_length(self):
+        cmd = ':CDEMod:COMPensate:EQUalize:LENGth?'
+        rpl = self.query(cmd)
+        return int(rpl)
+
+    def set_custom_demod_equalization_length(self, value):
+        if not isinstance(value, int):
+            raise TypeError('Custom Demod EQ length value should be int.')
+        if not value >= 3:
+            raise ValueError('Invalid EQ length: should >= 3')
+        cmd = ':CDEMod:COMPensate:EQUalize:LENGth {value:d}'.format(value=value)
+        self.command(cmd)
+        
+    def get_custom_demod_equalization_convergence(self):
+        cmd = ':CDEMod:COMPensate:EQUalize:CONVergence?'
+        rpl = self.query(cmd)
+        return float(rpl)
+
+    def set_custom_demod_equalization_convergence(self, value):
+        if not isinstance(value, (int, float)):
+            raise TypeError('Custom Demod EQ Convergence value should be number.')
+        if not 1E-8 <= value <= 1e-6:
+            raise ValueError('Invalid value of EQ convergence: should between 1E-6 and 1E-8.')
+        cmd = ':CDEMod:COMPensate:EQUalize:CONVergence {value:.4E}'.format(value=value)
+        self.command(cmd)
+
+    def get_custom_demod_equalizer_run_mode(self):
+        """
+        Gets the run mode of the Adaptive Equalizer.
+        """
+        cmd = ':CDEMod:COMPensate:EQUalize:MODE?'
+        rpl = self.query(cmd)
+        return rpl.strip().strip('"')
+
+    def set_custom_demod_equalizer_run_mode(self, value):
+        """
+        Sets the run mode of the Adaptive Equalizer.
+        """
+        MODES = { "Run", "Hold" }
+        if value not in MODES:
+            raise ValueError('Invalid value for Custom Demod EQ run mode: {vlaue!r}'.format(value))
+        cmd = ':CDEMod:COMPensate:EQUalize:MODE {value}'.format(value=value)
+        self.command(cmd)
+
+    def reset_custom_demod_equalizer(self):
+        cmd = ':CDEMod:COMPensate:EQUalize:RESet'
+        self.command(cmd)

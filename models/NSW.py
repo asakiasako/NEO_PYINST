@@ -82,7 +82,6 @@ class ModelNSW(BaseInstrument, TypeSW):
         Set channel.
         :param channel: (int) channel number (1 based)
         """
-
         index = self.__index
         self._select_device()
         self._ops.SetSelectChannel(index, channel)
@@ -96,7 +95,7 @@ class ModelNSW(BaseInstrument, TypeSW):
                 if count % 5 == 0:
                     tried += 1
                     if tried >= retry:
-                        raise RuntimeError('Unable to select Neo_Opswitch channel. DeviceName: %s' % self._resource_name)
+                        raise RuntimeError('Unable to select Neo_Opswitch channel. DeviceName: %s' % self.resource_name)
                     else:
                         self.reset()
             else:
@@ -117,7 +116,7 @@ class ModelNSW(BaseInstrument, TypeSW):
         Neo Optical Switch may lose USB control during auto test.
         This method reset the USB port to solve the connection issue.
         """
-        serial_number = self._resource_name
+        serial_number = self.resource_name
         dev = usb.core.find(serial_number=serial_number)
         if not dev:
             raise AttributeError('Error on Reset: USB Device not found. SN = %s' % serial_number)
