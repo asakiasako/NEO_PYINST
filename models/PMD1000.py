@@ -58,7 +58,7 @@ class ModelPMD1000(VisaInstrument, TypePMDE):
         """
         if not (isinstance(pmd, (float, int)) and isinstance(sopmd, (float, int))):
             raise TypeError('Param pmd and sopmd should be number')
-        if not 0.36 <= pmd <= 182.4:
+        if not 0 <= pmd <= 182.4:
             raise ValueError('Param pmd out of range')
         if not 0 <= sopmd <= 8319.9:
             raise ValueError('Param sopmd out of range')
