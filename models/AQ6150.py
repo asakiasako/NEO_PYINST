@@ -45,6 +45,11 @@ class ModelAQ6150(VisaInstrument, TypeWM):
         """
         return self.command(":ABOR")
 
+    def single(self):
+        if self.is_running():
+            raise PermissionError('Single measurement is discarded while repeat measurement is running.')
+        self.command(":INIT")
+
     def is_running(self):
         """
         Get measurement state of WM.
