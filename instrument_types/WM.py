@@ -27,22 +27,6 @@ class TypeWM(BaseInstrumentType):
         """
         self._raise_not_implemented()
 
-    def get_power_unit(self):
-        """
-        Get optical power unit.
-
-        :Returns: int, value of <enum 'OpticalUnit'>, optical power unit.
-        """
-        self._raise_not_implemented()
-
-    def set_power_unit(self, unit):
-        """
-        Set optical power unit.
-
-        :Parameters: **unit** - int, value of <enum 'OpticalUnit'>, optical power unit.
-        """
-        self._raise_not_implemented()
-
     def get_frequency(self):
         """
         Get frequency of single peak in THz.
@@ -58,37 +42,3 @@ class TypeWM(BaseInstrumentType):
         :Returns: float, wavelength in nm
         """
         self._raise_not_implemented()
-
-    def get_power_value(self):
-        """
-        Get power value of single peak in selected unit.
-
-        :Returns: float, optical power in selected unit.
-        """
-        self._raise_not_implemented()
-
-    def get_dbm_value(self):
-        """
-        Get dBm value of measured optical power. The value will convert for unit dBm if it is in Watt.
-        
-        :Returns: float, optical power in dBm
-        """
-        unit = self.get_power_unit()
-        value = self.get_power_value()
-        if unit == 0:
-            return value
-        elif unit == 1:
-            return w_to_dbm(value)
-
-    def get_w_value(self):
-        """
-        Get Watt value of measured optical power. The value will convert for unit Watt if it is in dBm.
-        
-        :Returns: float, optical power in Watt
-        """
-        unit = self.get_power_unit()
-        value = self.get_power_value()
-        if unit == 1:
-            return value
-        elif unit == 0:
-            return dbm_to_w(value)
