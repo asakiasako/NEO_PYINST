@@ -77,39 +77,63 @@ class ModelNSW(BaseInstrument, TypeSW):
         self._ops.USBDeviceName = self.resource_name
         self._ops.InitIntefaceType = 2
 
-    def set_channel(self, channel, retry=3):
-        """
-        Set channel.
-        :param channel: (int) channel number (1 based)
-        """
+    def __set_channel_single(self, channel):
         index = self.__index
         self._select_device()
         self._ops.SetSelectChannel(index, channel)
-        count = 0
-        tried = 0
-        while True:
-            current_channel = self.get_channel()
-            if current_channel != channel:
-                time.sleep(0.4)
-                count += 1
-                if count % 5 == 0:
-                    tried += 1
-                    if tried >= retry:
-                        raise RuntimeError('Unable to select Neo_Opswitch channel. DeviceName: %s' % self.resource_name)
-                    else:
-                        self.reset()
-            else:
-                break
 
-    def get_channel(self):
-        """
-        Get selected channel.
-        :return: (int) selected channel (1 based)
-        """
+    def __get_channel_single(self):
         index = self.__index
         self._select_device()
         channel = self._ops.GetSelectChannel(index)
         return channel
+
+    def __check_channel(self, expected, max_try=5):
+        tried = 0
+        while True:
+            tried += 1
+            time.sleep(0.4)
+            ch = self.__get_channel_single()
+            if ch == expected:
+                break
+            else:
+                if tried >= max_try:
+                    raise ValueError('Check Neo_Opswitch channel failed. DeviceName: %s' % self.resource_name)
+
+    def set_channel(self, channel, max_try=3):
+        """
+        Set channel.
+        :param channel: (int) channel number (1 based)
+        """
+        tried = 0
+        while True:
+            tried += 1
+            try:
+                self.__set_channel_single(channel)
+                self.__check_channel(channel)
+                break
+            except Exception as e:
+                try:
+                    self.reset()
+                    time.sleep(1)
+                except Exception:
+                    pass
+                if tried >= max_try:
+                    raise ValueError('Unable to set Neo_Opswitch channel. DeviceName: %s' % self.resource_name)
+
+    def get_channel(self, max_try=3):
+        """
+        Get selected channel.
+        :return: (int) selected channel (1 based)
+        """
+        tried = 0
+        while True:
+            tried += 1
+            try:
+                return self.__get_channel_single()
+            except Exception as e:
+                if tried >= max_try:
+                    raise RuntimeError('Unable to get Neo_Opswitch channel. DeviceName: %s' % self.resource_name)
 
     def reset(self):
         """

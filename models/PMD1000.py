@@ -35,6 +35,8 @@ class ModelPMD1000(VisaInstrument, TypePMDE):
         return self.set_frequency(round(LIGHT_SPEED/wavelength, 4))
 
     def set_frequency(self, freq):
+        # if not self.min_frequency <= freq <= self.max_frequency:
+        #     raise ValueError('Frequency out of range: {freq} THz'.format(freq=freq))
         ch = round((freq - 191.6)/0.05)+1
         return self.command('*CHC %03d#' % ch)
 
