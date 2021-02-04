@@ -41,7 +41,7 @@ class ModelPSY201(VisaInstrument, TypePOLC):
             raise TypeError('wavelength should be number')
         if not self.min_wavelength <= wavelength <= self.max_wavelength:
             raise ValueError('wavelength out of range')
-        wavelength = int(wavelength)
+        wavelength = round(wavelength)
         return self.command(':CONF:WLEN %d' % wavelength)
 
     def set_frequency(self, freq):

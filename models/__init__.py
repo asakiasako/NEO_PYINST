@@ -28,6 +28,7 @@ from .OTF970 import ModelOTF970
 from .OTF980 import ModelOTF980
 from .PDLE101 import ModelPDLE101
 from .PMD1000 import ModelPMD1000
+from .PSY101 import ModelPSY101
 from .PSY201 import ModelPSY201
 from .TC3625 import ModelTC3625
 from .WaveAnalyzer1500S import ModelWaveAnalyzer1500S
