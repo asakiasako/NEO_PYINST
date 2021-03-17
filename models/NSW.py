@@ -48,6 +48,8 @@ class ModelNSW(BaseInstrument, TypeSW):
                 raise KeyError('Invalid value for slot_or_type: %r' % slot_or_type)
         if not self._ops:
             raise ModuleNotFoundError('Neo_SmartOpticalSwitch.SmartOpticalSwitch')
+        if not self.check_connection():
+            raise ConnectionError('Unable to connect Neo_SW.')
 
     @property
     def resource_name(self):
@@ -65,10 +67,15 @@ class ModelNSW(BaseInstrument, TypeSW):
         pass
 
     def check_connection(self):
-        channel = self.get_channel()
-        if channel > 0:
-            return True
-        return False
+        try:
+            channel = self.get_channel()
+            if channel > 0:
+                connected = True
+            else:
+                connected = False
+        except Exception:
+            connected = False
+        return connected
 
     def _select_device(self):
         dev_list = self.get_usb_devices()
