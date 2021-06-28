@@ -1,7 +1,5 @@
 from ._BaseInstrument import BaseInstrument
 from ..instrument_types import TypeSW
-import subprocess
-import os
 import time
 from ..libs.neo_usb_device import NeoUsbDevice
 
