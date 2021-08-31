@@ -15,7 +15,7 @@ class ModelVsaOMA(ModelVSA89600, TypeOMA):
         freq = LIGHT_SPEED/wavelength
         self.set_frequency(freq)
 
-    def smart_setup(self, execute=True, freq=None, symbol_rate=None, fine_tune_symbol_rate=None, demodulation_format=None, polarization=None, pre_set_layout=None):
+    def smart_setup(self, execute=True, freq=None, symbol_rate=None, fine_tune_symbol_rate=None, demodulation_format=None, polarization=None, pre_set_layout=None, compensate_cd=None, compensate_pmd=None):
         """
         execute: if execute after setup. if false, settings will be set, but no execution will be done.
         """
@@ -53,5 +53,12 @@ class ModelVsaOMA(ModelVSA89600, TypeOMA):
             if not isinstance(pre_set_layout, bool):
                 raise TypeError('pre_set_layout should be bool.')
             self.command(':OMA:SMartSEtup:PREsetLAyout {enable:d}'.format(enable=pre_set_layout))
+        if compensate_cd is not None:
+            compensate_cd = bool(compensate_cd)
+            self.command(':OMA:SMartSEtup:COmpensateCD {:d}'.format(compensate_cd))
+        if compensate_pmd is not None:
+            compensate_pmd = bool(compensate_pmd)
+            self.command(':OMA:SMartSEtup:COmpensatePMD {:d}'.format(compensate_pmd))
         if execute:
             self.command(':OMA:SMartSEtup:PERformProposedActions')
+
