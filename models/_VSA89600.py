@@ -203,3 +203,12 @@ class ModelVSA89600(VisaInstrument):
     def reset_custom_demod_equalizer(self):
         cmd = ':CDEMod:COMPensate:EQUalize:RESet'
         self.command(cmd)
+
+    def get_custom_demod_result_length(self):
+        cmd = ':CDEMod:RLENgth?'
+        rpl = self.query(cmd)
+        return int(rpl)
+
+    def set_custom_demod_result_length(self, value):
+        cmd = ':CDEMod:RLENgth {v:d}'.format(v=value)
+        self.command(cmd)
