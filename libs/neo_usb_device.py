@@ -1,14 +1,6 @@
 import ctypes
 import time
 
-def _dec_check_open(function):
-    def wrapper(self, *args, **kwargs):
-        if not self.is_open:
-            raise ValueError('Device is not opened yet.')
-        else:
-            return function(self, *args, **kwargs)
-    return wrapper
-
 def _dec_open_close(function):
     def wrapper(self, *args, **kwargs):
         try:
@@ -103,25 +95,30 @@ class NeoUsbDevice:
             raise ValueError('No device with SN={sn}'.format(sn=sn))
         return devnum
 
+    def _action_open(self):
+        handle = ctypes.c_ulong()
+        si_status = self.dll_si_usb.SI_Open(ctypes.c_int(self.__devnum), ctypes.byref(handle))
+        self.check_si_status(si_status)
+        self.__handle = handle  # save handle only when opened successfully
+
+    def set_timeouts(self, r, w):
+        si_status = self.dll_si_usb.SI_SetTimeouts(r, w)
+        self.check_si_status(si_status)
+
     def open(self):
         if not self.__is_open:
-            try:
-                si_status = self.dll_si_usb.SI_Open(ctypes.c_int(self.__devnum), ctypes.byref(self.__handle))
-                print(self.__handle.value)
-                self.check_si_status(si_status)
-                si_status = self.dll_si_usb.SI_SetTimeouts(500, 1000)
-                self.check_si_status(si_status)
-            except:
-                si_status = self.dll_si_usb.SI_Close(self.__handle)
-                if si_status:
-                    print(si_status)
+            self.set_timeouts(500, 1000)
+            self._action_open()
             self.__is_open = True
 
     def close(self):
         if self.__is_open:
+            try:
+                self._action_open()
+            except:
+                pass
             si_status = self.dll_si_usb.SI_Close(self.__handle)
-            if si_status:
-                print(si_status)
+            self.check_si_status(si_status)
             self.__is_open = False
 
     def clear_buffer(self):
