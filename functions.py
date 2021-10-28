@@ -1,10 +1,9 @@
-import pyvisa
 from .models._VisaInstrument import rm
 from .constants import InstrumentType
 from . import models
 
 
-__all__ = ['get_resource_manager', 'close_resource_manager', 'list_resources', 'list_resources_info', 'resource_info', 'get_instrument_lib']
+__all__ = ['get_resource_manager', 'close_resource_manager', 'list_resources', 'list_resources_info', 'resource_info', 'get_instrument_lib', 'get_dlls_dir']
 
 
 def get_resource_manager():
@@ -85,3 +84,15 @@ def get_instrument_lib(detailed=True):
                 else:
                     model_lib[type_str].append(model_str)
     return model_lib
+
+def get_dlls_dir():
+    import platform
+    import os.path
+    arch = platform.architecture()[0]
+    arch_mapping = {
+        '32bit': 'x86',
+        '64bit': 'x64'
+    }
+    dlls_folder = arch_mapping[arch]
+    dlls_dir = os.path.join(os.path.dirname(__file__), 'DLLs', dlls_folder)
+    return dlls_dir

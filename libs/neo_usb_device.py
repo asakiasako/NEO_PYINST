@@ -1,5 +1,8 @@
 import ctypes
 import time
+import os
+
+from ..functions import get_dlls_dir
 
 def _dec_open_close(function):
     def wrapper(self, *args, **kwargs):
@@ -12,7 +15,7 @@ def _dec_open_close(function):
 
 class NeoUsbDevice:
 
-    dll_si_usb = ctypes.cdll.LoadLibrary('SiUSBXp.dll')
+    dll_si_usb = ctypes.cdll.LoadLibrary(os.path.join(get_dlls_dir(), 'SiUSBXp.dll'))
 
     @classmethod
     def check_si_status(cls, si_status):
@@ -101,9 +104,21 @@ class NeoUsbDevice:
         self.check_si_status(si_status)
         self.__handle = handle  # save handle only when opened successfully
 
+    def _action_close(self):
+        si_status = self.dll_si_usb.SI_Close(self.__handle)
+        self.check_si_status(si_status)
+
     def set_timeouts(self, r, w):
         si_status = self.dll_si_usb.SI_SetTimeouts(r, w)
         self.check_si_status(si_status)
+
+    def _open(self):
+        print('O')
+        self._action_open()
+
+    def _close(self):
+        print('C')
+        self._action_close()
 
     def open(self):
         if not self.__is_open:
@@ -115,10 +130,8 @@ class NeoUsbDevice:
         if self.__is_open:
             try:
                 self._action_open()
-            except:
-                pass
-            si_status = self.dll_si_usb.SI_Close(self.__handle)
-            self.check_si_status(si_status)
+            finally:
+                self._action_close()
             self.__is_open = False
 
     def clear_buffer(self):
