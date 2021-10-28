@@ -112,14 +112,6 @@ class NeoUsbDevice:
         si_status = self.dll_si_usb.SI_SetTimeouts(r, w)
         self.check_si_status(si_status)
 
-    def _open(self):
-        print('O')
-        self._action_open()
-
-    def _close(self):
-        print('C')
-        self._action_close()
-
     def open(self):
         if not self.__is_open:
             self.set_timeouts(500, 1000)
