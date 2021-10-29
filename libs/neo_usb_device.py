@@ -122,6 +122,8 @@ class NeoUsbDevice:
         if self.__is_open:
             try:
                 self._action_open()
+            except ValueError:
+                pass
             finally:
                 self._action_close()
             self.__is_open = False
