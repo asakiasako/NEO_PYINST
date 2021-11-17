@@ -47,7 +47,7 @@ class ModelPSY201(VisaInstrument, TypePOLC):
     def set_frequency(self, freq):
         return self.set_wavelength(LIGHT_SPEED/freq)
     
-    def set_scrambling_param(self, mode, *params):
+    def _set_scrambling_param(self, mode, *params):
         """
         Set scrambling params.
         :param mode: (str) Scrambling mode: DISCrete | TRIangle | TORNado
@@ -69,7 +69,7 @@ class ModelPSY201(VisaInstrument, TypePOLC):
             type = params[1]
             self.command(':CONT:SCR:TORN:TYPE %d' % type)
     
-    def set_scrambling_state(self, mode, is_on):
+    def _set_scrambling_state(self, mode, is_on):
         """
         Start or pause scrambling.
         :param mode: (str) Scrambling mode.
@@ -111,3 +111,10 @@ class ModelPSY201(VisaInstrument, TypePOLC):
         if not 0 <= phi <= 180:
             raise ValueError('Parameter phi out of range')
         return self.command(':CONT:ANGL %.2f,%.2f' % (theta, phi))
+            
+    def start_scrambling(self, mode, speed, *params):
+        self._set_scrambling_param(mode, speed, *params)
+        self._set_scrambling_state(mode, True)
+
+    def stop_scrambling(self):
+        self._set_scrambling_state('TORN', False)

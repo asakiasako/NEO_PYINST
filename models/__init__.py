@@ -9,6 +9,7 @@ from .ATS535 import ModelATS535
 from .BTF10011 import ModelBTF10011
 from .E3631A import ModelE3631A
 from .E3633A import ModelE3633A
+from .EPS1000 import ModelEPS1000
 from .M81571A import Model81571A
 from .M8163A import Model81635A
 from .M8292A import ModelM8292A
