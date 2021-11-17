@@ -50,7 +50,7 @@ class ModelPSY101(VisaInstrument, TypePOLC):
     def set_frequency(self, freq):
         return self.set_wavelength(LIGHT_SPEED/freq)
     
-    def set_scrambling_param(self, mode, speed):
+    def _set_scrambling_param(self, mode, speed):
         """
         Set scrambling params.
         :param mode: (str) Scrambling mode: RANDOM | SAW
@@ -71,7 +71,7 @@ class ModelPSY101(VisaInstrument, TypePOLC):
         if not rpl.strip() == '*E00':
             raise ValueError('Set scrambling param failed. ErrCode={}'.format(rpl))
     
-    def set_scrambling_state(self, mode, is_on):
+    def _set_scrambling_state(self, mode, is_on):
         """
         Start or pause scrambling.
         :param mode: (str) Scrambling mode: RANDOM | SAW
@@ -85,3 +85,10 @@ class ModelPSY101(VisaInstrument, TypePOLC):
             raise ValueError('Invalid scrambling mode: {mode}'.format(mode=mode))
         if not rpl.strip() == '*E00':
             raise ValueError('Set scrambling state failed. ErrCode={}'.format(rpl))
+
+    def start_scrambling(self, mode, speed, *params):
+        self._set_scrambling_param(mode, speed, *params)
+        self._set_scrambling_state(mode, True)
+
+    def stop_scrambling(self):
+        self._set_scrambling_state('TORN', False)

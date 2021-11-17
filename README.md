@@ -143,7 +143,7 @@ PyInst 的目的是将具体仪器抽象化，为同类型的仪器提供统一�
 
         缺少这些属性不会影响对象的功能，但这些信息有助于提供与仪器有关的信息。
     *  对象属性和方法：
-        * self._resource_name
+        * self.resource_name
         * self.close()
         * self.check_connection()
 

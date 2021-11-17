@@ -50,7 +50,7 @@ class ModelMPC202(VisaInstrument, TypePOLC):
     def set_frequency(self, freq):
         return self.set_wavelength(LIGHT_SPEED/freq)
     
-    def set_scrambling_param(self, mode, *params):
+    def _set_scrambling_param(self, mode, *params):
         """
         Set scrambling params.
         :param mode: (str) Scrambling mode: DISCrete | TRIangle | RAYLeigh | TORNado
@@ -62,25 +62,23 @@ class ModelMPC202(VisaInstrument, TypePOLC):
         'Discrete Rate': '0 to 20,000 points/s'
         """
         rate = params[0]
-        if len(mode) >= 4:
-            if mode[0:4].upper() == 'TORN':
-                if not 0 <= rate <= 60000:
-                    raise ValueError('Parameter rate is out of range')
-            elif mode[0:4].upper() == 'DISC':
-                if not 0 <= rate <= 20000:
-                    raise ValueError('Parameter rate is out of range')
-            else:
-                if not 0 <= rate <= 2000:
-                    raise ValueError('Parameter rate is out of range')
-        else:
+        if mode.upper().startswith('TORN'):
+            if not 0 <= rate <= 60000:
+                raise ValueError('Parameter rate is out of range')
+        elif mode.upper().startswith('DISC'):
+            if not 0 <= rate <= 20000:
+                raise ValueError('Parameter rate is out of range')
+        elif mode.upper().startswith(('RAYL', 'TRI')):
             if not 0 <= rate <= 2000:
                 raise ValueError('Parameter rate is out of range')
+        else:
+            raise ValueError('Invalid scrambling mode: {}'.format(mode))
         self.command(':%s:RATE %.1f' % (mode, rate))
-        if mode[0:4].upper() == 'TORN':
-            type = params[1]
-            self.command(':TORNado:TYPE %d' % type)
+        if mode.upper().startswith('TORN'):
+            torn_type = params[1]
+            self.command(':TORNado:TYPE %d' % torn_type)
     
-    def set_scrambling_state(self, mode, is_on):
+    def _set_scrambling_state(self, mode, is_on):
         """
         Start or pause scrambling.
         :param mode: (str) Scrambling mode: DISCrete | TRIangle | RAYLeigh | TORNado
@@ -89,3 +87,9 @@ class ModelMPC202(VisaInstrument, TypePOLC):
         state_str = 'ON' if is_on else 'OFF'
         return self.command(':%s:STAT %s' % (mode, state_str))
     
+    def start_scrambling(self, mode, speed, *params):
+        self._set_scrambling_param(mode, speed, *params)
+        self._set_scrambling_state(mode, True)
+
+    def stop_scrambling(self):
+        self._set_scrambling_state('TORN', False)
