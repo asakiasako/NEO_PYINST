@@ -1,8 +1,5 @@
 import ctypes
 import time
-import os
-
-from ..functions import get_dlls_dir
 
 def _dec_open_close(function):
     def wrapper(self, *args, **kwargs):
@@ -15,7 +12,7 @@ def _dec_open_close(function):
 
 class NeoUsbDevice:
 
-    dll_si_usb = ctypes.cdll.LoadLibrary(os.path.join(get_dlls_dir(), 'SiUSBXp.dll'))
+    dll_si_usb = ctypes.cdll.LoadLibrary('SiUSBXp.dll')
 
     @classmethod
     def check_si_status(cls, si_status):
