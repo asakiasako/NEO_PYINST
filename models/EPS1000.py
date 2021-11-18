@@ -14,6 +14,8 @@ class ModelEPS1000(BaseInstrument, TypePOLC):
         "Wavelength Range": "1510.3-1639.1 nm",
         "Frequency Range": "182.9-198.5 THz",
         "Insertion loss": "1.5-3 dB",
+        "Peaked Rate": "0-20,000,000 rad/s",
+        "Rayleigh Rate": "0-10,000,000 rad/s"
     }
 
     def __init__(self, resource_name:str, timeout=3, **kwargs):
@@ -119,7 +121,7 @@ class ModelEPS1000(BaseInstrument, TypePOLC):
         when mode is  'Rayleigh', the max speed is 1000000rad/s
         '''
         if mode == 'Peaked':
-            if 0 <= speed <= 2000000:
+            if 0 <= speed <= 20000000:
                 speed_10 = round(speed/10)
                 lsb = speed_10&0xFFFF
                 msb = (2<<14)|(speed_10>>16)
@@ -129,7 +131,7 @@ class ModelEPS1000(BaseInstrument, TypePOLC):
                 raise ValueError("Speed is out of range, the max speed of 'Peaked' mode is 2000000rad/s")
 
         elif mode == 'Rayleigh':
-            if 0 <= speed <= 1000000:
+            if 0 <= speed <= 10000000:
                 speed_10 = round(speed/10)
                 lsb = speed_10&0xFFFF
                 msb = (3<<14)|(speed_10>>16)

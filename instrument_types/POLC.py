@@ -83,23 +83,20 @@ class TypePOLC(BaseInstrumentType):
     def set_frequency(self, wavelength):
         self._raise_not_implemented()
         
-    def set_scrambling_param(self, mode, *params):
+    def start_scrambling(self, mode, speed, *params):
         """
-        Set scrambling params.
+        Start scrambling with specified mode and speed.
 
         :Parameters:
             - **mode** - str, scrambling mode.
+            - **speed** - float|int, the unit is mode specific
             - **params** - list(any), scrambling params.
         """
         self._raise_not_implemented()
     
-    def set_scrambling_state(self, mode, is_on):
+    def stop_scrambling(self):
         """
-        Start or pause scrambling.
-
-        :Parameters:
-            - **mode** - str, scrambling mode.
-            - **is_on** - bool, True -> start, False -> stop.
+        Stop scrambling
         """
         self._raise_not_implemented()
 
