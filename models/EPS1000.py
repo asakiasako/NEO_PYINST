@@ -94,6 +94,57 @@ class ModelEPS1000(BaseInstrument, TypePOLC):
 
         return value
 
+    def set_qwp(self, qwp_n , direction , speed):
+        """
+        qwp_n = 0, 1, 2, 3, 4, 5
+        direction = 0(Disabled), 1(Forward), -1(Backward)
+        speed = (rad/s)
+        """
+        control_reg_addr = qwp_n + 1
+        speed_reg_addr0 = qwp_n*2+11
+        speed_reg_addr1 = qwp_n*2+12
+        
+        if direction == 0:
+            self.write_register(control_reg_addr, 0)
+        elif direction == 1:
+            self.write_register(control_reg_addr, 1)
+        elif direction == -1:
+            self.write_register(control_reg_addr, 3)
+        else:
+            raise ValueError('Invalid value for direction: {}. Options: 0(Disabled), 1(Forward), -1(Backward)'.format(direction))
+        
+        speed_msb = int((speed*100)/(2**16)) & 0xffff
+        speed_lsb = int((speed*100)) & 0xffff
+        
+        self.write_register(speed_reg_addr0, speed_lsb)
+        self.write_register(speed_reg_addr1, speed_msb)
+        
+    def set_hwp(self, direction , speed):
+    
+        """
+        direction = 0(Disabled), 1(Forward), -1(Backward)
+        speed = (krad/s)
+        """
+        
+        control_reg_addr = 0
+        speed_reg_addr0 = 9
+        speed_reg_addr1 = 10
+
+        if direction == 0:
+            self.write_register(control_reg_addr, 0)
+        elif direction == 1:
+            self.write_register(control_reg_addr, 1)
+        elif direction == -1:
+            self.write_register(control_reg_addr, 3)
+        else:
+            raise ValueError('Invalid value for direction: {}. Options: 0(Disabled), 1(Forward), -1(Backward)'.format(direction))
+
+        speed_msb = int((speed*100)/(2**16)) & 0xffff
+        speed_lsb = int((speed*100)) & 0xffff
+        
+        self.write_register(speed_reg_addr0, speed_lsb)
+        self.write_register(speed_reg_addr1, speed_msb)
+
     def get_frequency(self):
         value = int(self.read_register(addr=25))
         freq = (value + 1828)/10
@@ -119,6 +170,7 @@ class ModelEPS1000(BaseInstrument, TypePOLC):
         speed unit: rad/s
         when mode is 'Peaked', the max speed is 2000000rad/s
         when mode is  'Rayleigh', the max speed is 1000000rad/s
+        when mode is 'Marvell', the unit is rad/s
         '''
         if mode == 'Peaked':
             if 0 <= speed <= 20000000:
@@ -139,6 +191,25 @@ class ModelEPS1000(BaseInstrument, TypePOLC):
                 self.write_register(addr=24, data=msb)
             else:
                 raise ValueError("Speed is out of range, the max speed of 'Rayleigh' mode is 1000000rad/s")
+
+        elif mode == 'Marvell':
+            self.stop_scrambling()
+            self.write_register(addr=23, data=0)
+            self.write_register(addr=24, data=0)
+            time.sleep(0.1)
+
+            qwp_speed = speed / 6
+            offset = 0.02
+            self.set_qwp(qwp_n=0, direction=1, speed=qwp_speed*(1.0+offset))
+            self.set_qwp(qwp_n=1, direction=-1, speed=qwp_speed*(1.0-offset))
+            self.set_qwp(qwp_n=2, direction=1, speed=qwp_speed*(1.0+offset))
+            self.set_hwp(direction=-1, speed=0.01) # -1 is backward. 0.01 could be just rad/s
+            self.set_qwp(qwp_n=3, direction=-1, speed=qwp_speed*(1.0-offset))
+            self.set_qwp(qwp_n=4, direction=1, speed=qwp_speed*(1.0+offset))
+            self.set_qwp(qwp_n=5, direction=-1, speed=qwp_speed*(1.0-offset))
+            if qwp_speed < 10:
+                self.set_hwp(direction=0, speed=0)
+
         else:
             raise ValueError("Invalid scrambling mode: {}".format(mode))
 
