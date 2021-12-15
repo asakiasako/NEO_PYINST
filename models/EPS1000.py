@@ -32,7 +32,11 @@ class ModelEPS1000(BaseInstrument, TypePOLC):
         device_list = ftd.listDevices()
 
         for i in range(len(device_list)):
-            sn = ftd.getDeviceInfoDetail(i)["description"].split()[-1].decode()
+            desc = ftd.getDeviceInfoDetail(i)["description"].decode()
+            if desc.startswith('EPS1000'):
+                sn = desc.split()[-1]
+            else:
+                continue
             if resource_name.endswith(sn):
                 self.__device_num = i
                 break
