@@ -55,6 +55,7 @@ class ModelPSY101(VisaInstrument, TypePOLC):
         Set scrambling params.
         :param mode: (str) Scrambling mode: RANDOM | SAW
         :param params: (any, any, ...) Scrambling params.
+        speed unit: Hz
         """
         if mode == 'RANDOM':
             if not 1 <= speed <= 6000:
@@ -91,4 +92,4 @@ class ModelPSY101(VisaInstrument, TypePOLC):
         self._set_scrambling_state(mode, True)
 
     def stop_scrambling(self):
-        self._set_scrambling_state('TORN', False)
+        self._set_scrambling_state('RANDOM', False)
