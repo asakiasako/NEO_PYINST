@@ -78,9 +78,9 @@ class ModelPSY101(VisaInstrument, TypePOLC):
         :param mode: (str) Scrambling mode: RANDOM | SAW
         :param ison: (bool) True->start  False->stop
         """
-        if mode == 'RANDOM':
+        if mode.upper() == 'RANDOM':
             rpl = self.query('*RAN:ENA {state}#'.format(state = 'ON' if is_on else 'OFF'))
-        elif mode == 'SAW':
+        elif mode.upper() == 'SAW':
             rpl = self.query('*SAW:ENA {state}#'.format(state = 'ON' if is_on else 'OFF'))
         else:
             raise ValueError('Invalid scrambling mode: {mode}'.format(mode=mode))
