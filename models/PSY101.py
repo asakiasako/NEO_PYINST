@@ -57,12 +57,12 @@ class ModelPSY101(VisaInstrument, TypePOLC):
         :param params: (any, any, ...) Scrambling params.
         speed unit: Hz
         """
-        if mode == 'RANDOM':
+        if mode.upper() == 'RANDOM':
             if not 1 <= speed <= 6000:
                 raise ValueError('Invalid scrambling speed: mode=RANDOM, speed={speed}'.format(speed=speed))
             speed = round(speed)
             rpl = self.query('*RAN:FRQ {speed:04d}#'.format(speed=speed))
-        elif mode == 'SAW':
+        elif mode.upper() == 'SAW':
             if not 0.1 <= speed <= 500:
                 raise ValueError('Invalid scrambling speed: mode=RANDOM, speed={speed}'.format(speed=speed))
             speed = round(speed, 1)
